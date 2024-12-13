@@ -1,13 +1,13 @@
-package com.example.collection;
+package com.example.booklist;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CollectionApplication {
+public class BooklistApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CollectionApplication.class, args);
+		SpringApplication.run(BooklistApplication.class, args);
 	}
 
 }
