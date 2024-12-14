@@ -18,6 +18,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenStoreService tokenStoreService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -44,6 +45,7 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        tokenStoreService.storeToken(user.getId(), jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

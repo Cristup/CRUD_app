@@ -1,5 +1,6 @@
 package com.example.booklist.config;
 
+import com.example.booklist.service.BlacklistService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import com.example.booklist.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -23,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final BlacklistService blacklistService;
 
     @Override
     protected void doFilterInternal(
@@ -38,6 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
+        if (blacklistService.isTokenBlacklisted(jwt)) {
+            throw new RuntimeException("Token has been blacklisted.");
+        }
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
