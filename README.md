@@ -3,12 +3,12 @@ https://start.spring.io/ setings:
 * Project: Maven
 * Spring boot: 3.4.0
 * Java: 17
-*Dependencies:
-  *Spring Web
-  *Spring Data JPA
-  *Lombok
-  *PostgreSQL Driver
-  *Spring Security
+* Dependencies:
+  * Spring Web
+  * Spring Data JPA
+  * Lombok
+  * PostgreSQL Driver
+  * Spring Security
 
 #
 ### Notes
