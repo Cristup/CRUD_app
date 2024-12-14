@@ -69,10 +69,8 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks(@RequestHeader("Authorization") String token) {
-        Integer userId = jwtService.extractUserId(token);
-        List<Book> books = bookService.getAllBooksByUser(userId);
-        return ResponseEntity.ok(books);
+    public ResponseEntity<List<Book>> getBooks() {
+        return ResponseEntity.ok(bookService.getBooksForCurrentUser());
     }
 
 }

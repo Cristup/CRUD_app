@@ -5,6 +5,9 @@ import com.example.booklist.entity.User;
 import com.example.booklist.repository.BookRepo;
 import com.example.booklist.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +51,12 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public List<Book> getAllBooksByUser(Integer userId) {
-        return bookRepository.findByUserId(userId);
+    public List<Book> getBooksForCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User not found"));
+        return bookRepository.findAllByUser(currentUser);
     }
+
 }
