@@ -90,3 +90,9 @@ Project setup in https://start.spring.io/
 | /api/books/{id} | PUT | Update book data |
 | /api/books/{id} | DELETE | Delete book |
 | /api/books | GET | Get all books data |
+
+## Sources
+1. https://www.youtube.com/@amigoscode
+2. https://chatgpt.com/
+3. https://www.toptal.com/spring/spring-security-tutorial
+4. https://medium.com/devdomain/using-lombok-in-spring-boot-simplifying-your-code-c38057894cb8
