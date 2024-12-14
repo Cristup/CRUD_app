@@ -2,11 +2,14 @@ package com.example.booklist.controller;
 
 import com.example.booklist.entity.Book;
 import com.example.booklist.entity.User;
+import com.example.booklist.repository.UserRepo;
 import com.example.booklist.service.BookService;
 import com.example.booklist.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,17 +21,18 @@ public class BookController {
 
     private final BookService bookService;
     private final JwtService jwtService;
+    private final UserRepo userRepo;
 
     @PostMapping
     public ResponseEntity<Book> createBook(
             @RequestBody Book book,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Integer userId = jwtService.extractUserId(token);
+        User user = userRepo.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        book.setUser(new User(userId));
-        Book createdBook = bookService.createBook(book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookService.createBook(book, user));
     }
 
     @GetMapping("/{id}")

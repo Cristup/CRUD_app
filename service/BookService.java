@@ -1,6 +1,7 @@
 package com.example.booklist.service;
 
 import com.example.booklist.entity.Book;
+import com.example.booklist.entity.User;
 import com.example.booklist.repository.BookRepo;
 import com.example.booklist.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,13 @@ public class BookService {
     private final BookRepo bookRepository;
     private final UserRepo userRepository;
 
-    public Book createBook(Book book) {
+    public Book createBook(Book book, User user) {
+        book.setUser(user);
         return bookRepository.save(book);
+    }
+
+    public List<Book> getBooksByUser(User user) {
+        return bookRepository.findByUser(user);
     }
 
     public Book getBookById(Integer id, Integer userId) {

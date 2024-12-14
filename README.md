@@ -8,7 +8,7 @@ In this example User can add books to his list and mark them as either read or n
 
 Project setup in https://start.spring.io/
 
-<img src="Images/SpringStart.png" alt="SpringStart" style="height: 300px;"/>   
+<img src="Images/SpringStart.png" alt="SpringStart" style="height: 500px;"/>   
 
 #### Settings:
 * Project: **Maven**
