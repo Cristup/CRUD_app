@@ -1,5 +1,5 @@
 ### Spring initializer
-https://start.spring.io/ setings:
+https://start.spring.io/ settings:
 * Project: Maven
 * Spring boot: 3.4.0
 * Java: 17
