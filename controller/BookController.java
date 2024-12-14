@@ -47,25 +47,45 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
 
-    @PutMapping("/{id}")
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Book> updateBook(
+//            @PathVariable Integer id,
+//            @RequestBody Book bookRequest,
+//            @RequestHeader("Authorization") String token
+//    ) {
+//        Integer userId = jwtService.extractUserId(token.substring(7));
+//        Book updatedBook = bookService.updateBook(id, bookRequest, userId);
+//        return ResponseEntity.ok(updatedBook);
+//    }
+
+    @PutMapping("/{bookId}")
     public ResponseEntity<Book> updateBook(
-            @PathVariable Integer id,
-            @RequestBody Book book,
-            @RequestHeader("Authorization") String token
-    ) {
-        Integer userId = jwtService.extractUserId(token);
-        book.setId(id); // Ensure the ID matches the book we want to update
-        Book updatedBook = bookService.updateBook(id, book, userId);
-        return ResponseEntity.ok(updatedBook);
+            @PathVariable Integer bookId,
+            @RequestBody Book updatedBook,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepo.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Book book = bookService.getBookById(bookId, user.getId());
+
+        book.setTitle(updatedBook.getTitle());
+        book.setAuthor(updatedBook.getAuthor());
+        book.setIsbn(updatedBook.getIsbn());
+        book.setRead(updatedBook.getRead());
+
+        bookService.save(book);
+
+        return ResponseEntity.ok(book);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Integer userId = jwtService.extractUserId(token);
-        bookService.deleteBook(id, userId);
+        User user = userRepo.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        bookService.deleteBook(id, user.getId());
         return ResponseEntity.noContent().build();
     }
 

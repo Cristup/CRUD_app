@@ -1,5 +1,7 @@
 package com.example.booklist.service;
 
+import com.example.booklist.entity.User;
+import com.example.booklist.repository.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,6 +23,11 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "7ad01b3bb209cd77f95b64f08dd48ad9b77f3a080c494facd65476a1feaa9937";
+    private final UserRepo userRepo;
+
+    public JwtService(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
 
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
@@ -39,6 +46,7 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
@@ -47,6 +55,12 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String generateTokenWithUserId(User user) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", user.getId());
+        return generateToken(extraClaims, user);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -86,6 +100,12 @@ public class JwtService {
     }
 
     public Integer extractUserId(String token) {
-        return null; // todo do stuff here today!
+        String email = extractClaims(token, Claims::getSubject);
+
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return user.getId();
     }
+
 }

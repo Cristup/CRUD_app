@@ -37,17 +37,30 @@ public class BookService {
         return book;
     }
 
-    public Book updateBook(Integer id, Book updatedBook, Integer userId) {
-        Book existingBook = getBookById(id, userId);
-        existingBook.setTitle(updatedBook.getTitle());
-        existingBook.setAuthor(updatedBook.getAuthor());
-        existingBook.setIsbn(updatedBook.getIsbn());
-        existingBook.setRead(updatedBook.getRead());
-        return bookRepository.save(existingBook);
+    public Book updateBook(Integer id, Book bookRequest, Integer userId) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
+        if (!book.getUser().getId().equals(userId)) {
+            throw new UnauthorizedAccessException("You do not own this book");
+        }
+
+        book.setTitle(bookRequest.getTitle());
+        book.setAuthor(bookRequest.getAuthor());
+        book.setIsbn(bookRequest.getIsbn());
+        book.setRead(bookRequest.getRead());
+
+        return bookRepository.save(book);
     }
 
-    public void deleteBook(Integer id, Integer userId) {
-        Book book = getBookById(id, userId);
+    public void deleteBook(Integer bookId, Integer userId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
+        if (!book.getUser().getId().equals(userId)) {
+            throw new UnauthorizedAccessException("You do not own this book");
+        }
+
         bookRepository.delete(book);
     }
 
@@ -59,4 +72,7 @@ public class BookService {
         return bookRepository.findAllByUser(currentUser);
     }
 
+    public Book save(Book book) {
+        return bookRepository.save(book);
+    }
 }
