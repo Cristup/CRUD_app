@@ -11,6 +11,7 @@ https://start.spring.io/ settings:
   * Spring Security
 
 #
+
 ### Notes
-Change pom.xml file to the one provided in booklist/pom.xml. (for jwt token dependencies and lombok fix)
-Change application.properties to connect to your DB.
+* Change pom.xml file to the one provided in booklist/pom.xml. (for jwt token dependencies and lombok fix)
+* Change application.properties to connect to your DB.
