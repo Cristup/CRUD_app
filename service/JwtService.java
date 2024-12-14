@@ -85,4 +85,7 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public Integer extractUserId(String token) {
+        return null; // todo do stuff here today!
+    }
 }

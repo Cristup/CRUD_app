@@ -37,6 +37,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public User(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String getPassword() {
         return password;
