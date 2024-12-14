@@ -5,13 +5,16 @@ import com.example.booklist.entity.User;
 import com.example.booklist.repository.UserRepo;
 import com.example.booklist.service.BookService;
 import com.example.booklist.service.JwtService;
+import com.example.booklist.service.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -36,13 +39,11 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(
-            @PathVariable Integer id,
-            @RequestHeader("Authorization") String token
-    ) {
-        Integer userId = jwtService.extractUserId(token);
+    public ResponseEntity<Book> getBookById(@PathVariable Integer id, Principal principal) {
+        String email = principal.getName();
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Book book = bookService.getBookById(id, user.getId());
 
-        Book book = bookService.getBookById(id, userId);
         return ResponseEntity.ok(book);
     }
 
